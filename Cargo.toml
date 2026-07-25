@@ -1,0 +1,35 @@
+[workspace]
+resolver = "2"
+members = [
+    "programs/eventquest",
+    "apps/api",
+    "apps/indexer",
+    "crates/eventquest-domain",
+    "crates/eventquest-chain",
+    "crates/eventquest-config",
+    "crates/eventquest-observability",
+]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+license = "UNLICENSED"
+
+[workspace.dependencies]
+anchor-lang = "1.1.2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "signal"] }
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter", "json"] }
+thiserror = "2"
+anyhow = "1"
+
+[profile.release]
+overflow-checks = true
+lto = "fat"
+codegen-units = 1
+opt-level = 3
+
+[profile.release.build-override]
+opt-level = 3

@@ -1,0 +1,12 @@
+[package]
+name = "eventquest-indexer"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[[bin]]
+name = "eventquest-indexer"
+path = "src/main.rs"
+
+[dependencies]
+tokio = { workspace = true }

@@ -8,3 +8,37 @@ CLAUDE.local.md
 .claude/context/
 .env
 .env.local
+.env*.local
+
+# Node / pnpm
+node_modules/
+.pnpm-store/
+.yarn/
+
+# Next.js
+.next/
+out/
+
+# Rust / Anchor
+target/
+.anchor/
+programs/**/target/
+test-ledger/
+
+# Build output
+dist/
+build/
+
+# Solana keypairs (never commit real keys)
+*keypair*.json
+attestor.json
+
+# EventQuest generated/local artifacts
+docs/DEVNET_TEST_REPORT.md.local
+
+# IDE / OS
+.idea/
+.vscode/
+*.swp
+.DS_Store
+Thumbs.db

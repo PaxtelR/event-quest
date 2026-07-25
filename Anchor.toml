@@ -1,0 +1,28 @@
+[toolchain]
+
+[features]
+resolution = true
+skip-lint = false
+
+[programs.localnet]
+eventquest = "CuULC7T6d49mf89sRPU8WLeYfkF74kDyEKvfCe2rXq8H"
+
+[programs.devnet]
+eventquest = "CuULC7T6d49mf89sRPU8WLeYfkF74kDyEKvfCe2rXq8H"
+
+[registry]
+url = "https://api.apr.dev"
+
+[provider]
+# Devnet is the only network this project is allowed to target during
+# development and for the MVP delivery. Do not change to mainnet-beta here —
+# see scripts/verify-devnet-config.sh, which fails the build if it detects
+# a mainnet RPC anywhere in this repo's configuration.
+cluster = "devnet"
+wallet = "~/.config/solana/id.json"
+
+[scripts]
+test = "pnpm --filter=./apps/web exec echo 'Anchor program tests run via cargo test / LiteSVM, see programs/eventquest'"
+
+[test]
+startup_wait = 5000

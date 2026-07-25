@@ -1,0 +1,46 @@
+[package]
+name = "eventquest"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[lib]
+crate-type = ["cdylib", "lib"]
+name = "eventquest"
+
+[features]
+no-entrypoint = []
+cpi = ["no-entrypoint"]
+idl-build = ["anchor-lang/idl-build"]
+# Anchor's macros reference these cfg flags internally for optional debug
+# logging; declaring them here (unused) silences rustc's unexpected_cfgs
+# lint without changing any behavior.
+anchor-debug = []
+no-log-ix-name = []
+custom-heap = []
+custom-panic = []
+default = []
+
+[dependencies]
+anchor-lang = { workspace = true }
+
+[dev-dependencies]
+# Pinned to exactly what mollusk-svm 0.5.1 itself depends on (see its
+# published Cargo.toml) so Cargo resolves one shared copy of each crate
+# instead of two incompatible generations (this bit us once already with
+# a blanket `solana-sdk = "3"` pin — see docs/adr, or `cargo tree -i` on
+# any of these crate names if this ever needs re-diagnosing).
+mollusk-svm = "0.5"
+solana-pubkey = "2.2"
+solana-account = "2.2"
+solana-instruction = "2.2"
+solana-program-error = "2.2"
+solana-sdk-ids = "2.2"
+
+[lints.rust]
+# Anchor's `#[program]` macro expands code gated on `target_os = "solana"`
+# (the BPF/SBF target), which rustc doesn't know about on host builds
+# (macOS/Linux dev machines). Registering it here silences the
+# unexpected_cfgs lint on non-Solana build targets without affecting the
+# real on-chain build.
+unexpected_cfgs = { level = "warn", check-cfg = ["cfg(target_os, values(\"solana\"))"] }

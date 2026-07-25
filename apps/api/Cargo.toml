@@ -1,0 +1,12 @@
+[package]
+name = "eventquest-api"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[[bin]]
+name = "eventquest-api"
+path = "src/main.rs"
+
+[dependencies]
+tokio = { workspace = true }
