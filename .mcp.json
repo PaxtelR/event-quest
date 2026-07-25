@@ -2,34 +2,60 @@
   "mcpServers": {
     "helius": {
       "command": "npx",
-      "args": ["-y", "helius-mcp@latest"],
+      "args": [
+        "-y",
+        "helius-mcp@latest"
+      ],
       "env": {
         "HELIUS_API_KEY": "${HELIUS_API_KEY}"
       }
     },
     "solana-dev": {
       "command": "npx",
-      "args": ["-y", "mcp-remote@latest", "https://mcp.solana.com/mcp"]
+      "args": [
+        "-y",
+        "mcp-remote@latest",
+        "https://mcp.solana.com/mcp"
+      ]
     },
     "context7": {
       "command": "npx",
-      "args": ["-y", "@upstash/context7-mcp@latest"]
+      "args": [
+        "-y",
+        "@upstash/context7-mcp@latest"
+      ]
     },
     "playwright": {
       "command": "npx",
-      "args": ["-y", "@playwright/mcp@latest", "--headless"]
+      "args": [
+        "-y",
+        "@playwright/mcp@latest",
+        "--headless"
+      ]
     },
     "context-mode": {
       "command": "npx",
-      "args": ["-y", "context-mode@latest"]
+      "args": [
+        "-y",
+        "context-mode@latest"
+      ]
     },
     "memsearch": {
       "command": "npx",
-      "args": ["-y", "memsearch-mcp@latest"]
+      "args": [
+        "-y",
+        "memsearch-mcp@latest"
+      ]
     },
     "surfpool": {
       "command": "surfpool",
-      "args": ["mcp"]
+      "args": [
+        "mcp"
+      ]
+    },
+    "higgsfield": {
+      "type": "http",
+      "url": "https://mcp.higgsfield.ai/mcp"
     }
   }
 }

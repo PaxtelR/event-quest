@@ -9,4 +9,79 @@ name = "eventquest-api"
 path = "src/main.rs"
 
 [dependencies]
-tokio = { workspace = true }
+tokio = { workspace = true, features = ["net", "time", "fs"] }
+axum = { version = "0.8", features = ["macros"] }
+tower = "0.5"
+tower-http = { version = "0.7", features = ["trace", "cors", "request-id", "timeout"] }
+sqlx = { version = "0.8", default-features = false, features = [
+    "runtime-tokio-rustls",
+    "postgres",
+    "uuid",
+    "chrono",
+    "macros",
+    "migrate",
+    "json",
+] }
+redis = { version = "1", features = ["tokio-comp", "connection-manager"] }
+serde = { workspace = true }
+serde_json = { workspace = true }
+uuid = { workspace = true }
+chrono = { version = "0.4", features = ["serde"] }
+thiserror = { workspace = true }
+anyhow = { workspace = true }
+tracing = { workspace = true }
+tracing-subscriber = { workspace = true }
+dotenvy = "0.15"
+validator = { version = "0.20", features = ["derive"] }
+url = "2"
+reqwest = { version = "0.13", default-features = false, features = ["rustls", "json"] }
+axum-extra = { version = "0.12", features = ["cookie"] }
+ed25519-dalek = "3"
+bs58 = "0.5"
+rand = "0.10"
+time = "0.3"
+jsonwebtoken = { version = "11", default-features = false, features = ["rust_crypto"] }
+async-stream = "0.3"
+urlencoding = "2"
+futures-util = "0.3"
+bincode = "1"
+sha2 = "0.10"
+hex = "0.4"
+
+# Solana transaction-construction stack, pinned to the exact patch
+# versions that still depend on `solana-pubkey ^3.0.0` — the same line
+# anchor-lang 1.1.2 (and crates/eventquest-chain) use directly. Every
+# solana-instruction/-transaction/-message release from the next minor
+# onward jumps to the newer `solana-pubkey 4.x` generation (a thin alias
+# over the separate `solana-address` crate), which drags in a `wincode`
+# version conflicting with the one still used elsewhere in this exact
+# graph. `solana-rpc-client` itself transitively requires that newer
+# `solana-transaction` line no matter what (its own `^3.0.2` requirement
+# already excludes the clean 3.0.1), so a full RPC client crate isn't
+# usable here at all — see blockchain/rpc.rs for the minimal hand-rolled
+# JSON-RPC client instead (Solana's JSON-RPC protocol is simple enough
+# that this isn't a big loss, and `reqwest`/`serde_json` are already
+# dependencies). The attestor signs manually via `ed25519-dalek` (see
+# blockchain/client.rs) rather than via `solana-signer`'s `Signer` trait —
+# reusing the exact crate the auth module already verifies signatures
+# with — but `solana-transaction`'s own optional "bincode" feature (needed
+# for `Transaction::message_data()`/serialization) still pulls in
+# `solana-signer` transitively, so it's pinned here too, to the one exact
+# patch (3.0.0) that stays on the clean `solana-pubkey ^3.0.0` line.
+solana-transaction = { version = "=3.0.1", features = ["bincode"] }
+solana-message = "=3.0.1"
+solana-hash = "=3.1.0"
+solana-pubkey = "=3.0.0"
+solana-instruction = "=3.0.0"
+solana-signature = "=3.0.0"
+solana-signer = "=3.0.0"
+base64 = "0.22"
+
+anchor-lang = { workspace = true }
+eventquest-config = { path = "../../crates/eventquest-config" }
+eventquest-domain = { path = "../../crates/eventquest-domain" }
+eventquest-chain = { path = "../../crates/eventquest-chain" }
+eventquest-observability = { path = "../../crates/eventquest-observability" }
+
+[dev-dependencies]
+tokio = { workspace = true, features = ["test-util"] }

@@ -6,3 +6,8 @@ license.workspace = true
 
 [dependencies]
 serde = { workspace = true }
+thiserror = { workspace = true }
+# Pinned to match anchor-lang's own direct requirement (see
+# crates/eventquest-chain/Cargo.toml comment) so `Pubkey` here is the exact
+# same type as `anchor_lang::prelude::Pubkey` used throughout the backend.
+solana-pubkey = "3"

@@ -9,4 +9,46 @@ name = "eventquest-indexer"
 path = "src/main.rs"
 
 [dependencies]
-tokio = { workspace = true }
+tokio = { workspace = true, features = ["time"] }
+anchor-lang = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+tracing = { workspace = true }
+tracing-subscriber = { workspace = true }
+anyhow = { workspace = true }
+uuid = { workspace = true }
+chrono = { version = "0.4", features = ["serde"] }
+sqlx = { version = "0.8", default-features = false, features = [
+    "runtime-tokio-rustls",
+    "postgres",
+    "uuid",
+    "chrono",
+    "macros",
+] }
+redis = { version = "1", features = ["tokio-comp", "connection-manager"] }
+reqwest = { version = "0.13", default-features = false, features = ["rustls", "json"] }
+base64 = "0.22"
+hex = "0.4"
+dotenvy = "0.15"
+
+eventquest-config = { path = "../../crates/eventquest-config" }
+eventquest-chain = { path = "../../crates/eventquest-chain" }
+
+# Devnet-test-only: builds and submits transactions directly (attestor as
+# organizer/participant stand-in) to provision on-chain fixtures for
+# `devnet_tests`. Pinned to the exact same versions as apps/api/Cargo.toml
+# for the same reason — see that file's comment; this workspace has one
+# shared Cargo.lock, so these must stay on the `solana-pubkey ^3.0.0` line
+# anchor-lang/eventquest-chain also use, not the newer `solana-address`
+# generation a caret range would otherwise resolve to.
+[dev-dependencies]
+ed25519-dalek = "3"
+solana-transaction = { version = "=3.0.1", features = ["bincode"] }
+solana-message = "=3.0.1"
+solana-hash = "=3.1.0"
+solana-pubkey = "=3.0.0"
+solana-instruction = "=3.0.0"
+solana-signature = "=3.0.0"
+solana-signer = "=3.0.0"
+bincode = "1"
+rand = "0.10"

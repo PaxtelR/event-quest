@@ -30,8 +30,11 @@ dist/
 build/
 
 # Solana keypairs (never commit real keys)
+.secrets/
 *keypair*.json
 attestor.json
+attestor-*.json
+id.json
 
 # EventQuest generated/local artifacts
 docs/DEVNET_TEST_REPORT.md.local

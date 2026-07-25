@@ -1,0 +1,9 @@
+{
+  "cluster": "devnet",
+  "programId": "CuULC7T6d49mf89sRPU8WLeYfkF74kDyEKvfCe2rXq8H",
+  "deployedAt": "2026-07-25T13:44:00Z",
+  "deploySignature": "2GU8WKq4XRg19U3V8iDEP6dB9jMbYmZDZTVKXQ5tKNjYvpMUTGB5KQ8hZQniDhH7NYVASrRR339bLukDYsN5hJPB",
+  "idlSha256": "a0afa6080718635488d3589a50ec992d521b48dcfc4513881987d8813c0b7b15",
+  "gitCommit": "77af3de70f9af9c8ed8aaf7b0dfc99a5374ae79c",
+  "explorerBaseUrl": "https://explorer.solana.com/?cluster=devnet"
+}
