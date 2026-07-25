@@ -1,0 +1,88 @@
+@import "tailwindcss";
+
+/*
+ * Design tokens — spec §15.1. Dark mode is the only theme in the MVP (no
+ * light/dark toggle). Values are mirrored into Tailwind's `@theme` block
+ * below so components use semantic utilities (`bg-surface`,
+ * `text-text-secondary`, `border-accent`, ...) instead of hex literals.
+ */
+:root {
+  color-scheme: dark;
+
+  --color-background: #0b0b0c;
+  --color-surface: #141416;
+  --color-surface-elevated: #1c1c1f;
+  --color-surface-hover: #232327;
+
+  --color-border: #2a2a2f;
+  --color-border-strong: #3a3a40;
+
+  --color-text-primary: #f5f5f5;
+  --color-text-secondary: #a1a1aa;
+  --color-text-disabled: #71717a;
+
+  --color-accent: #f97316;
+  --color-accent-hover: #fb923c;
+  --color-accent-active: #ea580c;
+  --color-accent-soft: rgb(249 115 22 / 14%);
+  --color-accent-foreground: #09090b;
+  --color-focus-ring: #fdba74;
+
+  --color-success: #22c55e;
+  --color-warning: #f59e0b;
+  --color-error: #ef4444;
+  --color-info: #38bdf8;
+}
+
+@theme {
+  --color-background: var(--color-background);
+  --color-surface: var(--color-surface);
+  --color-surface-elevated: var(--color-surface-elevated);
+  --color-surface-hover: var(--color-surface-hover);
+  --color-border: var(--color-border);
+  --color-border-strong: var(--color-border-strong);
+  --color-text-primary: var(--color-text-primary);
+  --color-text-secondary: var(--color-text-secondary);
+  --color-text-disabled: var(--color-text-disabled);
+  --color-accent: var(--color-accent);
+  --color-accent-hover: var(--color-accent-hover);
+  --color-accent-active: var(--color-accent-active);
+  --color-accent-soft: var(--color-accent-soft);
+  --color-accent-foreground: var(--color-accent-foreground);
+  --color-focus-ring: var(--color-focus-ring);
+  --color-success: var(--color-success);
+  --color-warning: var(--color-warning);
+  --color-error: var(--color-error);
+  --color-info: var(--color-info);
+
+  --font-sans: "Inter", system-ui, sans-serif;
+  --font-mono: "Geist Mono", "JetBrains Mono", ui-monospace, monospace;
+}
+
+html {
+  color-scheme: dark;
+}
+
+body {
+  background: var(--color-background);
+  color: var(--color-text-primary);
+  font-family: var(--font-sans);
+}
+
+/* Visible focus ring on every interactive control — spec §15.1
+   accessibility requirement: "Foco visível em todos os controles." */
+:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

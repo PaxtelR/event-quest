@@ -1,0 +1,43 @@
+{
+  "name": "@eventquest/web",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "next": "16.2.12",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "@solana/kit": "7.0.0",
+    "@solana/react": "7.0.0",
+    "@wallet-standard/react": "1.0.3",
+    "@tanstack/react-query": "5.101.4",
+    "zod": "4.4.3",
+    "qrcode": "1.5.4",
+    "jsqr": "1.4.0",
+    "dotenv": "17.4.2"
+  },
+  "devDependencies": {
+    "typescript": "6.0.3",
+    "@types/node": "26.1.1",
+    "@types/react": "19.2.17",
+    "@types/react-dom": "19.2.3",
+    "@types/qrcode": "1.5.6",
+    "tailwindcss": "4.3.3",
+    "@tailwindcss/postcss": "4.3.3",
+    "postcss": "8.5.23",
+    "eslint": "9.39.5",
+    "eslint-config-next": "16.2.12",
+    "vitest": "4.1.10",
+    "@testing-library/react": "16.3.2",
+    "@testing-library/jest-dom": "7.0.0",
+    "jsdom": "29.1.1"
+  }
+}

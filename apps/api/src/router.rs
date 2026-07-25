@@ -2,7 +2,9 @@ use axum::routing::get;
 use axum::Router;
 use tower_http::trace::TraceLayer;
 
-use crate::{auth, checkins, checkpoints, events, health, qr, state::AppState};
+use crate::{
+    auth, checkins, checkpoints, events, health, organizations, participants, qr, state::AppState,
+};
 
 pub fn build(state: AppState) -> Router {
     let api_v1 = Router::new()
@@ -10,6 +12,8 @@ pub fn build(state: AppState) -> Router {
         .merge(events::router())
         .merge(checkpoints::router())
         .merge(checkins::router())
+        .merge(organizations::router())
+        .merge(participants::router())
         .merge(qr::router())
         .nest("/public", qr::public_router());
 

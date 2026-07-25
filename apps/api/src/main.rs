@@ -11,6 +11,8 @@ mod error;
 mod events;
 mod health;
 mod onchain;
+mod organizations;
+mod participants;
 mod qr;
 mod router;
 mod state;
