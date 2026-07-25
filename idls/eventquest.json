@@ -1,0 +1,1155 @@
+{
+  "address": "CuULC7T6d49mf89sRPU8WLeYfkF74kDyEKvfCe2rXq8H",
+  "metadata": {
+    "name": "eventquest",
+    "version": "0.1.0",
+    "spec": "0.1.0"
+  },
+  "instructions": [
+    {
+      "name": "check_in",
+      "discriminator": [
+        209,
+        253,
+        4,
+        217,
+        250,
+        241,
+        207,
+        50
+      ],
+      "accounts": [
+        {
+          "name": "participant",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "participant_event"
+          ]
+        },
+        {
+          "name": "attestor",
+          "docs": [
+            "Backend attestor for this checkpoint. Must match `checkpoint.attestor`",
+            "— the program never trusts a JWT or Redis state, only this signature."
+          ],
+          "signer": true
+        },
+        {
+          "name": "event",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  118,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "event.authority",
+                "account": "EventAccount"
+              },
+              {
+                "kind": "account",
+                "path": "event.external_id_hash",
+                "account": "EventAccount"
+              }
+            ]
+          },
+          "relations": [
+            "checkpoint",
+            "participant_event"
+          ]
+        },
+        {
+          "name": "checkpoint",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  104,
+                  101,
+                  99,
+                  107,
+                  112,
+                  111,
+                  105,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "event"
+              },
+              {
+                "kind": "account",
+                "path": "checkpoint.external_id_hash",
+                "account": "CheckpointAccount"
+              }
+            ]
+          }
+        },
+        {
+          "name": "participant_event",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  97,
+                  114,
+                  116,
+                  105,
+                  99,
+                  105,
+                  112,
+                  97,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "event"
+              },
+              {
+                "kind": "account",
+                "path": "participant"
+              }
+            ]
+          }
+        },
+        {
+          "name": "attendance",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  116,
+                  116,
+                  101,
+                  110,
+                  100,
+                  97,
+                  110,
+                  99,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "event"
+              },
+              {
+                "kind": "account",
+                "path": "checkpoint"
+              },
+              {
+                "kind": "account",
+                "path": "participant"
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "challenge_hash",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "create_checkpoint",
+      "discriminator": [
+        87,
+        58,
+        2,
+        214,
+        112,
+        193,
+        234,
+        5
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "event"
+          ]
+        },
+        {
+          "name": "event",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  118,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "authority"
+              },
+              {
+                "kind": "account",
+                "path": "event.external_id_hash",
+                "account": "EventAccount"
+              }
+            ]
+          }
+        },
+        {
+          "name": "checkpoint",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  104,
+                  101,
+                  99,
+                  107,
+                  112,
+                  111,
+                  105,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "event"
+              },
+              {
+                "kind": "arg",
+                "path": "external_id_hash"
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "external_id_hash",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        },
+        {
+          "name": "attestor",
+          "type": "pubkey"
+        },
+        {
+          "name": "opens_at",
+          "type": "i64"
+        },
+        {
+          "name": "closes_at",
+          "type": "i64"
+        },
+        {
+          "name": "points",
+          "type": "u32"
+        }
+      ]
+    },
+    {
+      "name": "finish_participant_event",
+      "discriminator": [
+        248,
+        101,
+        31,
+        11,
+        204,
+        208,
+        29,
+        91
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "signer": true,
+          "relations": [
+            "event"
+          ]
+        },
+        {
+          "name": "event",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  118,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "authority"
+              },
+              {
+                "kind": "account",
+                "path": "event.external_id_hash",
+                "account": "EventAccount"
+              }
+            ]
+          },
+          "relations": [
+            "participant_event"
+          ]
+        },
+        {
+          "name": "participant_event",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  97,
+                  114,
+                  116,
+                  105,
+                  99,
+                  105,
+                  112,
+                  97,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "event"
+              },
+              {
+                "kind": "account",
+                "path": "participant_event.participant",
+                "account": "ParticipantEventAccount"
+              }
+            ]
+          }
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "initialize_event",
+      "discriminator": [
+        126,
+        249,
+        86,
+        221,
+        202,
+        171,
+        134,
+        20
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "event",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  118,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "authority"
+              },
+              {
+                "kind": "arg",
+                "path": "external_id_hash"
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "external_id_hash",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        },
+        {
+          "name": "starts_at",
+          "type": "i64"
+        },
+        {
+          "name": "ends_at",
+          "type": "i64"
+        }
+      ]
+    },
+    {
+      "name": "join_event",
+      "discriminator": [
+        10,
+        93,
+        234,
+        137,
+        237,
+        194,
+        224,
+        0
+      ],
+      "accounts": [
+        {
+          "name": "participant",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "event",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  118,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "event.authority",
+                "account": "EventAccount"
+              },
+              {
+                "kind": "account",
+                "path": "event.external_id_hash",
+                "account": "EventAccount"
+              }
+            ]
+          }
+        },
+        {
+          "name": "participant_event",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  97,
+                  114,
+                  116,
+                  105,
+                  99,
+                  105,
+                  112,
+                  97,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "event"
+              },
+              {
+                "kind": "account",
+                "path": "participant"
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "update_checkpoint",
+      "discriminator": [
+        240,
+        31,
+        161,
+        37,
+        25,
+        68,
+        43,
+        243
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "signer": true,
+          "relations": [
+            "event"
+          ]
+        },
+        {
+          "name": "event",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  118,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "authority"
+              },
+              {
+                "kind": "account",
+                "path": "event.external_id_hash",
+                "account": "EventAccount"
+              }
+            ]
+          },
+          "relations": [
+            "checkpoint"
+          ]
+        },
+        {
+          "name": "checkpoint",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  104,
+                  101,
+                  99,
+                  107,
+                  112,
+                  111,
+                  105,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "event"
+              },
+              {
+                "kind": "account",
+                "path": "checkpoint.external_id_hash",
+                "account": "CheckpointAccount"
+              }
+            ]
+          }
+        }
+      ],
+      "args": [
+        {
+          "name": "params",
+          "type": {
+            "defined": {
+              "name": "UpdateCheckpointParams"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "update_event_status",
+      "discriminator": [
+        181,
+        237,
+        172,
+        72,
+        61,
+        132,
+        77,
+        247
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "signer": true,
+          "relations": [
+            "event"
+          ]
+        },
+        {
+          "name": "event",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  118,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "authority"
+              },
+              {
+                "kind": "account",
+                "path": "event.external_id_hash",
+                "account": "EventAccount"
+              }
+            ]
+          }
+        }
+      ],
+      "args": [
+        {
+          "name": "new_status",
+          "type": {
+            "defined": {
+              "name": "EventStatus"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "AttendanceAccount",
+      "discriminator": [
+        192,
+        174,
+        120,
+        155,
+        74,
+        188,
+        212,
+        232
+      ]
+    },
+    {
+      "name": "CheckpointAccount",
+      "discriminator": [
+        77,
+        17,
+        153,
+        203,
+        1,
+        236,
+        71,
+        89
+      ]
+    },
+    {
+      "name": "EventAccount",
+      "discriminator": [
+        98,
+        136,
+        32,
+        165,
+        133,
+        231,
+        243,
+        154
+      ]
+    },
+    {
+      "name": "ParticipantEventAccount",
+      "discriminator": [
+        169,
+        192,
+        202,
+        57,
+        192,
+        114,
+        150,
+        221
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "AttendanceRecorded",
+      "discriminator": [
+        82,
+        101,
+        58,
+        209,
+        105,
+        52,
+        141,
+        207
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "Overflow",
+      "msg": "Arithmetic overflow occurred"
+    },
+    {
+      "code": 6001,
+      "name": "InvalidEventPeriod",
+      "msg": "Invalid event period: starts_at must be before ends_at"
+    },
+    {
+      "code": 6002,
+      "name": "CheckpointOutsideEventPeriod",
+      "msg": "Checkpoint schedule must fall within the event period"
+    },
+    {
+      "code": 6003,
+      "name": "InvalidCheckpointPeriod",
+      "msg": "Invalid checkpoint period: opens_at must be before closes_at"
+    },
+    {
+      "code": 6004,
+      "name": "PointsOutOfRange",
+      "msg": "Points must be greater than zero and within the allowed maximum"
+    },
+    {
+      "code": 6005,
+      "name": "CheckpointPointsLocked",
+      "msg": "Checkpoint points cannot be changed after check-ins have occurred"
+    },
+    {
+      "code": 6006,
+      "name": "EventNotActive",
+      "msg": "Event is not active"
+    },
+    {
+      "code": 6007,
+      "name": "CheckpointNotActive",
+      "msg": "Checkpoint is not active"
+    },
+    {
+      "code": 6008,
+      "name": "EventMismatch",
+      "msg": "Account does not belong to the expected event"
+    },
+    {
+      "code": 6009,
+      "name": "CheckpointNotOpen",
+      "msg": "Current time is outside the checkpoint's open window"
+    },
+    {
+      "code": 6010,
+      "name": "InvalidAttestor",
+      "msg": "Unexpected attestor for this checkpoint"
+    },
+    {
+      "code": 6011,
+      "name": "Unauthorized",
+      "msg": "Only the event authority can perform this action"
+    },
+    {
+      "code": 6012,
+      "name": "InvalidChallengeHash",
+      "msg": "Challenge hash must be a non-zero 32-byte value"
+    },
+    {
+      "code": 6013,
+      "name": "InvalidStatusTransition",
+      "msg": "This status transition is not allowed"
+    }
+  ],
+  "types": [
+    {
+      "name": "AttendanceAccount",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "event",
+            "type": "pubkey"
+          },
+          {
+            "name": "checkpoint",
+            "type": "pubkey"
+          },
+          {
+            "name": "participant",
+            "type": "pubkey"
+          },
+          {
+            "name": "attestor",
+            "type": "pubkey"
+          },
+          {
+            "name": "challenge_hash",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "checked_in_at",
+            "type": "i64"
+          },
+          {
+            "name": "points_awarded",
+            "type": "u32"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "AttendanceRecorded",
+      "docs": [
+        "Emitted on every successful `check_in`. This is the only channel the",
+        "off-chain indexer trusts as proof that attendance was recorded — see",
+        "docs/adr/ADR-001-architecture.md."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "event",
+            "type": "pubkey"
+          },
+          {
+            "name": "checkpoint",
+            "type": "pubkey"
+          },
+          {
+            "name": "participant",
+            "type": "pubkey"
+          },
+          {
+            "name": "attestor",
+            "type": "pubkey"
+          },
+          {
+            "name": "checked_in_at",
+            "type": "i64"
+          },
+          {
+            "name": "points_awarded",
+            "type": "u32"
+          },
+          {
+            "name": "challenge_hash",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "CheckpointAccount",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "event",
+            "type": "pubkey"
+          },
+          {
+            "name": "attestor",
+            "type": "pubkey"
+          },
+          {
+            "name": "external_id_hash",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "opens_at",
+            "type": "i64"
+          },
+          {
+            "name": "closes_at",
+            "type": "i64"
+          },
+          {
+            "name": "points",
+            "type": "u32"
+          },
+          {
+            "name": "active",
+            "type": "bool"
+          },
+          {
+            "name": "total_checkins",
+            "type": "u64"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "EventAccount",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "authority",
+            "type": "pubkey"
+          },
+          {
+            "name": "external_id_hash",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "starts_at",
+            "type": "i64"
+          },
+          {
+            "name": "ends_at",
+            "type": "i64"
+          },
+          {
+            "name": "status",
+            "type": {
+              "defined": {
+                "name": "EventStatus"
+              }
+            }
+          },
+          {
+            "name": "checkpoint_count",
+            "type": "u32"
+          },
+          {
+            "name": "total_checkins",
+            "type": "u64"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "EventStatus",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Draft"
+          },
+          {
+            "name": "Active"
+          },
+          {
+            "name": "Paused"
+          },
+          {
+            "name": "Finished"
+          },
+          {
+            "name": "Cancelled"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ParticipantEventAccount",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "event",
+            "type": "pubkey"
+          },
+          {
+            "name": "participant",
+            "type": "pubkey"
+          },
+          {
+            "name": "points",
+            "type": "u64"
+          },
+          {
+            "name": "checkin_count",
+            "type": "u32"
+          },
+          {
+            "name": "completed",
+            "type": "bool"
+          },
+          {
+            "name": "created_at",
+            "type": "i64"
+          },
+          {
+            "name": "updated_at",
+            "type": "i64"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "UpdateCheckpointParams",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "attestor",
+            "type": {
+              "option": "pubkey"
+            }
+          },
+          {
+            "name": "opens_at",
+            "type": {
+              "option": "i64"
+            }
+          },
+          {
+            "name": "closes_at",
+            "type": {
+              "option": "i64"
+            }
+          },
+          {
+            "name": "points",
+            "type": {
+              "option": "u32"
+            }
+          },
+          {
+            "name": "active",
+            "type": {
+              "option": "bool"
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "constants": [
+    {
+      "name": "ATTENDANCE_SEED",
+      "type": "bytes",
+      "value": "[97, 116, 116, 101, 110, 100, 97, 110, 99, 101]"
+    },
+    {
+      "name": "CHECKPOINT_SEED",
+      "type": "bytes",
+      "value": "[99, 104, 101, 99, 107, 112, 111, 105, 110, 116]"
+    },
+    {
+      "name": "EVENT_SEED",
+      "type": "bytes",
+      "value": "[101, 118, 101, 110, 116]"
+    },
+    {
+      "name": "MAX_POINTS_PER_CHECKPOINT",
+      "docs": [
+        "Upper bound on points a single checkpoint can award. Keeps",
+        "`ParticipantEventAccount::points` (u64, summed via checked_add) far from",
+        "overflow even across a large number of checkpoints, and gives the",
+        "organizer-facing API a sane input bound to enforce as well."
+      ],
+      "type": "u32",
+      "value": "10000"
+    },
+    {
+      "name": "PARTICIPANT_SEED",
+      "type": "bytes",
+      "value": "[112, 97, 114, 116, 105, 99, 105, 112, 97, 110, 116]"
+    }
+  ]
+}

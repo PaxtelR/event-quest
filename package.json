@@ -11,7 +11,8 @@
   "scripts": {
     "build": "pnpm -r --filter=./apps/web build",
     "dev:web": "pnpm --filter=./apps/web dev",
-    "test:ts": "pnpm -r --filter=./apps/web test",
+    "test:ts": "pnpm -r --filter=./apps/web --filter=./packages/chain-client test",
+    "generate:chain-client": "pnpm --filter=./packages/chain-client generate",
     "test:e2e": "pnpm --filter=./apps/web exec playwright test",
     "devnet:smoke": "tsx scripts/devnet-smoke-test.ts",
     "devnet:verify-config": "bash scripts/verify-devnet-config.sh"

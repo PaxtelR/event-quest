@@ -1,0 +1,26 @@
+{
+  "name": "@eventquest/chain-client",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Typed @solana/kit client for the eventquest program, generated from its IDL via Codama. See docs/adr/ADR-002-solana-client.md — do not hand-write account/instruction encodings elsewhere.",
+  "type": "module",
+  "main": "./src/generated/index.ts",
+  "types": "./src/generated/index.ts",
+  "scripts": {
+    "generate": "tsx codama.config.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "tsx --test 'src/**/*.test.ts'"
+  },
+  "dependencies": {
+    "@solana/kit": "^7.0.0",
+    "@solana/program-client-core": "^7.0.0"
+  },
+  "devDependencies": {
+    "codama": "^1.9.0",
+    "@codama/nodes-from-anchor": "^1.5.2",
+    "@codama/renderers-js": "^2.3.0",
+    "typescript": "^5.7.0",
+    "tsx": "^4.19.0",
+    "@types/node": "^22.10.0"
+  }
+}

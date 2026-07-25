@@ -4,5 +4,18 @@ version.workspace = true
 edition.workspace = true
 license.workspace = true
 
+[features]
+# Never enabled — declared only so rustc's unexpected_cfgs lint recognizes
+# the cfg that `declare_program!`'s macro expansion checks for.
+idl-build = []
+
 [dependencies]
+anchor-lang = { workspace = true }
 serde = { workspace = true }
+
+[lints.rust]
+# `declare_program!` expands code gated on `target_os = "solana"` and a
+# local `idl-build` feature this crate doesn't declare (it's off-chain-only
+# client code, never built for BPF or IDL extraction). Same rationale as
+# programs/eventquest/Cargo.toml.
+unexpected_cfgs = { level = "warn", check-cfg = ["cfg(target_os, values(\"solana\"))"] }
