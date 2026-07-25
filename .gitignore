@@ -1,0 +1,10 @@
+
+# External Claude skill submodules (re-fetched via: git submodule update --init)
+.claude/skills/ext/
+
+
+# solana-ai-kit local-only (never committed)
+CLAUDE.local.md
+.claude/context/
+.env
+.env.local
