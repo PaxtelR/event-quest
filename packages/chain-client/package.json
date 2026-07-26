@@ -19,7 +19,7 @@
     "codama": "^1.9.0",
     "@codama/nodes-from-anchor": "^1.5.2",
     "@codama/renderers-js": "^2.3.0",
-    "typescript": "^5.7.0",
+    "typescript": "^7.0.2",
     "tsx": "^4.19.0",
     "@types/node": "^22.10.0"
   }
