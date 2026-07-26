@@ -108,7 +108,7 @@ Solflare/Backpack), and create an event from `/admin`.
 # Rust: program (Mollusk) + backend + indexer + shared crates
 cargo fmt --check
 cargo clippy --workspace --all-targets -- -W clippy::all -D warnings
-cargo test --workspace              # 42 tests, 4 additional live-Devnet
+cargo test --workspace              # 43 tests, 4 additional live-Devnet
                                      # tests gated behind --ignored
 
 # TypeScript: frontend + generated client
@@ -129,9 +129,16 @@ pnpm devnet:smoke
 ./scripts/devnet-e2e.sh
 ```
 
-CI (`.github/workflows/ci.yml`) runs fmt/clippy/test and typecheck/lint/
-test/build on every push and PR to `main`. The Devnet-facing scripts are
-deliberately not in CI — they need a funded keypair and take minutes.
+CI (`.github/workflows/ci.yml`) runs fmt/clippy/`cargo audit`/test and
+typecheck/lint/test/build on every push and PR to `main`; every action is
+pinned to a commit SHA (`docs/audits/infra-2026-07-26.md`), and Dependabot
+(`.github/dependabot.yml`) keeps those SHAs and the Cargo/pnpm lockfiles
+current. `.cargo/audit.toml` allow-lists the 3 pre-reviewed advisories from
+`docs/SECURITY.md` SEC-04/SEC-05 so CI only fails on new ones. The
+Devnet-facing scripts are deliberately not in CI — they need a funded
+keypair and take minutes. Fuzz testing (Trident) and a verifiable-build CI
+job are intentionally not wired in yet — both are pre-Mainnet gates
+(`docs/SECURITY.md` SEC-03), not needed for this Devnet MVP.
 
 ## Devnet proof
 
@@ -147,7 +154,8 @@ never a mock, a local-validator-only result, or a simulated transaction
 ## Security
 
 - On-chain program audit: [`docs/security-audit-2026-07-26.md`](docs/security-audit-2026-07-26.md) — 0 critical, 0 high, 0 medium findings
-- Infrastructure audit: [`docs/audits/infra-2026-07-26.md`](docs/audits/infra-2026-07-26.md) — 2 medium findings, both fixed in the same pass (log-level wiring, sensitive tokens in query-string logs)
+- Infrastructure audit: [`docs/audits/infra-2026-07-26.md`](docs/audits/infra-2026-07-26.md) — 2 medium + 1 high finding, all fixed in the same pass (log-level wiring, sensitive tokens in query-string logs, unpinned CI actions)
+- CU profile: [`docs/audits/cu-profile-2026-07-26.md`](docs/audits/cu-profile-2026-07-26.md) — every instruction under 20k CU, well below the 200k default budget
 - All deferred (non-blocking) findings, with severity/evidence/impact/mitigation/justification: [`docs/SECURITY.md`](docs/SECURITY.md)
 - Secrets: never committed (verified against full git history, not just the working tree) — see `.gitignore` and the infra audit's Phase 1
 

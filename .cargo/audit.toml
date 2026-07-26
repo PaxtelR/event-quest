@@ -1,0 +1,14 @@
+[advisories]
+ignore = [
+    # rsa timing side-channel — reachable in the dependency tree via
+    # jsonwebtoken, but apps/api only ever uses Algorithm::HS256 (HMAC),
+    # never rsa's signing/decryption path. No fixed upgrade exists yet.
+    # See docs/SECURITY.md SEC-04.
+    "RUSTSEC-2023-0071",
+    # curve25519-dalek / ed25519-dalek — transitive dev-dependencies of
+    # mollusk-svm (the on-chain program's local test harness) or
+    # anchor-lang's own pinned graph; never compiled into a deployed
+    # binary. See docs/SECURITY.md SEC-05.
+    "RUSTSEC-2024-0344",
+    "RUSTSEC-2022-0093",
+]

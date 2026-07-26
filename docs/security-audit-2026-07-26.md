@@ -48,7 +48,7 @@ No `unwrap()`/`expect()`/`panic!` anywhere in `programs/eventquest/src/instructi
 
 ## CU Discipline
 
-Zero `msg!()` calls anywhere in the program (verified by grep) — no CU spent on logging in the hot path. Observed CU consumption from live test runs: `check_in` ≈ 10.9k–21.3k CU, `create_checkpoint`/`initialize_event` single-digit-thousands — all far below the 200k default budget, no compute-budget instruction needed.
+Zero `msg!()` calls anywhere in the program (verified by grep) — no CU spent on logging in the hot path. Precise, reproducible measurements (superseding the earlier ad hoc range quoted here) are in [`docs/audits/cu-profile-2026-07-26.md`](audits/cu-profile-2026-07-26.md): every instruction from `update_event_status` (4.0k CU) up to `check_in` (19.4k CU, the highest) sits under 20k CU — all far below the 200k default budget, no compute-budget instruction needed.
 
 ## Testing Coverage
 

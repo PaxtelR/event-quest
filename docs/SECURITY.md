@@ -93,7 +93,9 @@ purely "present in the dependency tree," not "reachable."
 **Justification for deferral**: No upgrade path exists yet (`cargo audit`
 reports "No fixed upgrade is available" for this advisory), and the code
 path is unreachable regardless. Re-check on every `jsonwebtoken`/`rsa`
-version bump.
+version bump. Allow-listed in `.cargo/audit.toml` (added via `/setup-ci-cd`)
+so CI's `cargo audit` step fails on any *new* advisory without re-flagging
+this one — remove the ignore entry once a fix ships upstream.
 
 ## SEC-05: Several `mollusk-svm` dev-dependency advisories
 
@@ -115,7 +117,11 @@ processes on developer/CI machines.
 the installed `anchor-cli 1.1.2`/Solana 3.x toolchain (see the extensive
 version-pinning history in this project's ADRs and `.claude/rules/anchor.md`).
 Revisit when the next Anchor/Mollusk release naturally picks up newer
-transitive versions.
+transitive versions. The two advisories with RUSTSEC IDs
+(`curve25519-dalek`/`ed25519-dalek`) are allow-listed in `.cargo/audit.toml`;
+the remaining unmaintained-package warnings (`atty`, `bincode`,
+`derivative`, `libsecp256k1`, `paste`) don't fail `cargo audit` by default
+and need no entry.
 
 ## SEC-06 (resolved): `docker-compose.yml` referenced nonexistent Dockerfiles
 

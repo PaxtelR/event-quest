@@ -37,6 +37,14 @@ jobs:
       - name: cargo clippy
         run: cargo clippy --workspace --all-targets -- -W clippy::all -D warnings
 
+      # audit.toml's `ignore` list allow-lists the 3 advisories already
+      # reviewed and justified in docs/SECURITY.md (SEC-04/SEC-05) — this
+      # step fails on any *new* advisory, not on already-accepted risk.
+      - name: cargo audit
+        run: |
+          cargo install cargo-audit --locked
+          cargo audit
+
       # The Mollusk-based program tests (programs/eventquest/tests/) load
       # the compiled on-chain program from target/deploy/eventquest.so at
       # runtime — `cargo test` alone never produces it, only building for
