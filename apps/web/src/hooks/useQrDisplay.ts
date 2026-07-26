@@ -33,11 +33,23 @@ type QrStreamState = {
   connected: boolean;
 };
 
+const POLL_FALLBACK_INTERVAL_MS = 5_000;
+
 /**
  * Consumes the public `qr-stream` SSE endpoint (spec §15.4) — connection
  * status feeds the display's own connection indicator, and an "inactive"
  * event (checkpoint paused/closed) clears the current QR immediately
  * rather than ever showing a stale one during a disconnect.
+ *
+ * Some network paths between the display and the API (corporate proxies,
+ * some CDN/tunnel configurations) silently buffer a long-lived SSE
+ * response and never deliver a single event, even though the same
+ * endpoint streams correctly end to end otherwise — there's no reliable
+ * way to detect this from the client side beyond "it's been quiet too
+ * long." A parallel poll of the same public `current-qr` endpoint runs
+ * regardless of SSE state, so the display still rotates correctly even
+ * when SSE is silently broken; whichever channel reports first wins,
+ * since both describe the same server-side rotation window.
  */
 export function useQrStream(checkpointId: string, displayAccessToken: string | undefined): QrStreamState {
   const [state, setState] = useState<QrStreamState>({ window: null, active: true, connected: false });
@@ -59,7 +71,32 @@ export function useQrStream(checkpointId: string, displayAccessToken: string | u
     });
     source.onerror = () => setState((current) => ({ ...current, connected: false }));
 
-    return () => source.close();
+    let cancelled = false;
+    async function poll() {
+      try {
+        const response = await fetch(
+          `/api/v1/public/checkpoints/${checkpointId}/current-qr?displayAccessToken=${encodeURIComponent(displayAccessToken ?? "")}`,
+        );
+        if (cancelled) return;
+        if (response.ok) {
+          const window = (await response.json()) as CurrentQrWindow;
+          setState({ window, active: true, connected: true });
+        } else if (response.status === 403 || response.status === 404) {
+          setState((current) => ({ ...current, window: null, active: false }));
+        }
+      } catch {
+        // Transient network hiccup — leave the last known state as is
+        // rather than flashing to "paused" on a single failed poll.
+      }
+    }
+    const pollTimer = setInterval(poll, POLL_FALLBACK_INTERVAL_MS);
+    poll();
+
+    return () => {
+      cancelled = true;
+      clearInterval(pollTimer);
+      source.close();
+    };
   }, [checkpointId, displayAccessToken]);
 
   return state;

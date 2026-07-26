@@ -67,7 +67,13 @@ pub async fn create_checkpoint(
         ));
     }
 
-    let rotation_seconds = body.rotation_seconds.unwrap_or(DEFAULT_ROTATION_SECONDS);
+    let configured_default_rotation: i32 = state
+        .config
+        .qr
+        .rotation_seconds
+        .try_into()
+        .unwrap_or(DEFAULT_ROTATION_SECONDS);
+    let rotation_seconds = body.rotation_seconds.unwrap_or(configured_default_rotation);
 
     let sql = format!(
         "insert into checkpoints (event_id, name, description, points, rotation_seconds, \

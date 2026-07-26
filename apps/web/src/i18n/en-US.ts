@@ -22,6 +22,7 @@ export const messages = {
     mainNavigation: "Main navigation",
     home: "Home",
     events: "Events",
+    checkIn: "Check in",
     admin: "Admin",
     myPassport: "My passport",
   },
@@ -47,6 +48,7 @@ export const messages = {
     description:
       "EventQuest turns in-person events into an on-chain attendance and gamification platform. Scan a rotating QR code at each checkpoint, sign with your wallet, and your attendance is recorded on Solana — verifiably and publicly.",
     browseEvents: "Browse events",
+    goToCheckIn: "Check in",
     goToAdmin: "Organizer dashboard",
   },
   events: {

@@ -20,6 +20,12 @@ export default function HomePage() {
           {messages.home.browseEvents}
         </Link>
         <Link
+          href="/check-in"
+          className="rounded-lg border border-border-strong bg-surface-elevated px-6 py-3 text-sm font-semibold text-text-primary transition-colors hover:bg-surface-hover"
+        >
+          {messages.home.goToCheckIn}
+        </Link>
+        <Link
           href="/admin"
           className="rounded-lg border border-border-strong bg-surface-elevated px-6 py-3 text-sm font-semibold text-text-primary transition-colors hover:bg-surface-hover"
         >

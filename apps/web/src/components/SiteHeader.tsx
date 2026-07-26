@@ -16,6 +16,9 @@ export function SiteHeader() {
         <Link href="/events" className="transition-colors hover:text-text-primary">
           {messages.nav.events}
         </Link>
+        <Link href="/check-in" className="transition-colors hover:text-text-primary">
+          {messages.nav.checkIn}
+        </Link>
         <Link href="/admin" className="transition-colors hover:text-text-primary">
           {messages.nav.admin}
         </Link>

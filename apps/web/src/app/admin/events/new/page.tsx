@@ -60,6 +60,13 @@ function CreateEventForm() {
               ...result.data,
               startsAt: new Date(result.data.startsAt).toISOString(),
               endsAt: new Date(result.data.endsAt).toISOString(),
+              // Without this, every event defaults to the backend's
+              // `timezone = 'UTC'` column default, and every display page
+              // (which formats dates using the event's stored timezone,
+              // not the viewer's own) would render UTC wall-clock times
+              // mislabeled as if they were whatever the organizer typed —
+              // e.g. a 13:00 local start showing as "16:00" to everyone.
+              timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
             },
             {
               onSuccess: (event) => router.push(`/admin/events/${event.id}`),

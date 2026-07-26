@@ -51,6 +51,7 @@ export type CreateEventInput = {
   endsAt: string;
   visibility: "public" | "private";
   organizationId?: string;
+  timezone?: string;
 };
 
 export function useCreateEvent() {
