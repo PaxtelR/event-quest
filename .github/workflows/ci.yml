@@ -1,0 +1,62 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+# Least-privilege by default (spec §25.7 / docs/audits/infra-2026-07-26.md
+# Phase 3) — neither job needs to write anything back to the repo or call
+# the GitHub API.
+permissions:
+  contents: read
+
+jobs:
+  rust:
+    name: Rust (fmt, clippy, test)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+
+      - uses: Swatinem/rust-cache@v2
+
+      - name: cargo fmt --check
+        run: cargo fmt --check
+
+      - name: cargo clippy
+        run: cargo clippy --workspace --all-targets -- -W clippy::all -D warnings
+
+      - name: cargo test
+        run: cargo test --workspace
+
+  typescript:
+    name: TypeScript (typecheck, lint, test, build)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: pnpm install
+        run: pnpm install --frozen-lockfile
+
+      - name: typecheck
+        run: pnpm -r --filter=./apps/web --filter=./packages/chain-client typecheck
+
+      - name: lint
+        run: pnpm --filter=./apps/web lint
+
+      - name: test
+        run: pnpm test:ts
+
+      - name: build
+        run: pnpm --filter=./apps/web build

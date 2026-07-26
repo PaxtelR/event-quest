@@ -37,10 +37,13 @@ const RECONCILE_PAGE_SIZE: usize = 1000;
 async fn main() -> anyhow::Result<()> {
     dotenvy::dotenv().ok();
 
+    // See apps/api/src/main.rs's identical fix for why this reads
+    // `LOG_LEVEL` directly instead of through `AppConfig`.
+    let log_filter = std::env::var("RUST_LOG")
+        .or_else(|_| std::env::var("LOG_LEVEL"))
+        .unwrap_or_else(|_| "info".to_string());
     tracing_subscriber::fmt()
-        .with_env_filter(
-            tracing_subscriber::EnvFilter::try_from_default_env().unwrap_or_else(|_| "info".into()),
-        )
+        .with_env_filter(tracing_subscriber::EnvFilter::new(log_filter))
         .json()
         .init();
 

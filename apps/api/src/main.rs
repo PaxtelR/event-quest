@@ -31,10 +31,16 @@ async fn main() -> anyhow::Result<()> {
     // environment is injected directly and no `.env` file exists.
     dotenvy::dotenv().ok();
 
+    // `RUST_LOG` (tracing's own convention) wins if set; otherwise fall
+    // back to this project's `LOG_LEVEL` (documented in .env.example),
+    // then "info". Config isn't loaded yet at this point (logging must be
+    // ready before anything else can report errors), so this reads the
+    // env var directly rather than through `AppConfig`.
+    let log_filter = std::env::var("RUST_LOG")
+        .or_else(|_| std::env::var("LOG_LEVEL"))
+        .unwrap_or_else(|_| "info".to_string());
     tracing_subscriber::fmt()
-        .with_env_filter(
-            tracing_subscriber::EnvFilter::try_from_default_env().unwrap_or_else(|_| "info".into()),
-        )
+        .with_env_filter(tracing_subscriber::EnvFilter::new(log_filter))
         .json()
         .init();
 

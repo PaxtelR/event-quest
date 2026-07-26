@@ -155,8 +155,7 @@ the loop.
   `devnet_tests`) separately prove the same backend-mediated check-in flow
   at the Rust level against this same program on Devnet, run via
   `cargo test -- --ignored`.
-- **Supporting scripts not yet committed** at the time this report was
-  generated (`scripts/devnet-smoke-test.ts`, `scripts/verify-devnet-config.sh`,
-  `scripts/devnet-e2e.sh`, `apps/web/tests/e2e-devnet/`, this file, and the
-  new package dependencies) — the on-chain proof above is unaffected (no
-  program changes), but `git commit` is pending.
+- Supporting scripts (`scripts/devnet-smoke-test.ts`,
+  `scripts/verify-devnet-config.sh`, `scripts/devnet-e2e.sh`,
+  `apps/web/tests/e2e-devnet/`, this file) are committed as of the "phase 6"
+  commit.
