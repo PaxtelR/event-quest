@@ -1520,7 +1520,7 @@ dependencies = [
  "mollusk-svm",
  "solana-account",
  "solana-instruction 2.3.3",
- "solana-program-error 2.2.2",
+ "solana-program-error 3.0.1",
  "solana-pubkey 2.4.0",
  "solana-sdk-ids 2.2.1",
 ]
