@@ -80,7 +80,7 @@ async fn main() -> anyhow::Result<()> {
     .await
     .inspect_err(|error| tracing::error!(%error, "failed to initialize blockchain client"))?;
 
-    let bind_addr = bind_address(&config.api_url);
+    let bind_addr = bind_address(std::env::var("PORT").ok().as_deref(), &config.api_url);
     let state = state::AppState::new(config, db, redis, attestor_pubkey, blockchain);
     let app = router::build(state);
 
@@ -91,13 +91,16 @@ async fn main() -> anyhow::Result<()> {
     Ok(())
 }
 
-/// Binds on all interfaces, using the port from `API_URL` (defaulting to
-/// 3001 if it can't be parsed) so local dev and container deployments agree
-/// on the port without a second env var to keep in sync.
-fn bind_address(api_url: &str) -> SocketAddr {
-    let port = url::Url::parse(api_url)
-        .ok()
-        .and_then(|url| url.port())
+/// Binds on all interfaces. Prefers `PORT` (the convention platforms like
+/// Railway/Heroku inject at runtime with a dynamically assigned value the
+/// service *must* listen on for their healthcheck/routing to find it),
+/// falling back to the port embedded in `API_URL` — which is what local
+/// dev and docker-compose rely on, since neither sets `PORT` — and finally
+/// to 3001 if neither parses.
+fn bind_address(port_env: Option<&str>, api_url: &str) -> SocketAddr {
+    let port = port_env
+        .and_then(|value| value.parse().ok())
+        .or_else(|| url::Url::parse(api_url).ok().and_then(|url| url.port()))
         .unwrap_or(3001);
     SocketAddr::new(IpAddr::from([0, 0, 0, 0]), port)
 }
@@ -108,8 +111,24 @@ mod tests {
 
     #[test]
     fn bind_address_uses_port_from_api_url() {
-        assert_eq!(bind_address("http://localhost:3001").port(), 3001);
-        assert_eq!(bind_address("http://localhost:8080").port(), 8080);
-        assert_eq!(bind_address("not a url").port(), 3001);
+        assert_eq!(bind_address(None, "http://localhost:3001").port(), 3001);
+        assert_eq!(bind_address(None, "http://localhost:8080").port(), 8080);
+        assert_eq!(bind_address(None, "not a url").port(), 3001);
+    }
+
+    #[test]
+    fn bind_address_prefers_the_port_env_var_when_set() {
+        // Railway (and most PaaS platforms) inject a dynamically assigned
+        // `PORT` the service must listen on for healthchecks to find it —
+        // this must win over whatever port happens to be in `API_URL`.
+        assert_eq!(
+            bind_address(Some("8080"), "http://localhost:3001").port(),
+            8080
+        );
+        // Garbage `PORT` values fall back rather than binding to port 0.
+        assert_eq!(
+            bind_address(Some("not a number"), "http://localhost:3001").port(),
+            3001
+        );
     }
 }
