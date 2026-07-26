@@ -17,6 +17,12 @@ FROM node:22-slim AS runtime
 WORKDIR /app
 ENV NODE_ENV=production
 ENV PORT=3000
+# Next's standalone server.js does `process.env.HOSTNAME || '0.0.0.0'` —
+# Docker (and platforms like Railway) auto-populate `HOSTNAME` with the
+# container's own id/hostname, so without this override the server binds
+# to that specific hostname instead of all interfaces, and an external
+# healthcheck can never reach it even though the process is running fine.
+ENV HOSTNAME=0.0.0.0
 
 # `output: "standalone"` (apps/web/next.config.ts) traces a self-contained
 # server.js + the minimal node_modules subset it actually needs, mirroring
