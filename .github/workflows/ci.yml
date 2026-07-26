@@ -16,13 +16,20 @@ jobs:
     name: Rust (fmt, clippy, test)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
 
-      - uses: dtolnay/rust-toolchain@stable
+      # dtolnay/rust-toolchain has no release tags — `@stable` is itself a
+      # branch the maintainer moves forward, by design, so this action
+      # always installs whatever Rust release is *currently* stable. Pinned
+      # to that branch's current commit anyway (a moving branch ref is a
+      # bigger supply-chain risk than a moving tag), which means this now
+      # needs a periodic manual bump to keep tracking new stable Rust
+      # releases — an explicit, accepted tradeoff, not an oversight.
+      - uses: dtolnay/rust-toolchain@4cda84d5c5c54efe2404f9d843567869ab1699d4 # stable, as of 2026-07-26
         with:
           components: rustfmt, clippy
 
-      - uses: Swatinem/rust-cache@v2
+      - uses: Swatinem/rust-cache@e18b497796c12c097a38f9edb9d0641fb99eee32 # v2, as of 2026-07-26
 
       - name: cargo fmt --check
         run: cargo fmt --check
@@ -50,11 +57,11 @@ jobs:
     name: TypeScript (typecheck, lint, test, build)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
 
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4.3.0
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: 22
           cache: pnpm

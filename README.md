@@ -192,6 +192,15 @@ spec §4/§30.
   own discussion of the tradeoffs (backend now needs a funded, actively
   managed relayer wallet, and rate limiting matters more once check-ins
   are free for participants to attempt).
+- **Passport visible in the wallet itself**: today, "My passport"
+  (`/participant/passport`) only exists as a page on this site — it reads
+  the participant's on-chain accounts and Postgres, but nothing is
+  actually minted, so a participant's own wallet app (Phantom, Solflare,
+  etc.) has nothing to show natively. Minting an NFT — likely a
+  compressed NFT via **Bubblegum** for cost reasons — per attendance or
+  per completed event would make it show up directly in the wallet's own
+  Collectibles view, no visit to the app required. Explicitly out of MVP
+  scope per spec §4/§30; not implemented.
 
 ## Operations
 
