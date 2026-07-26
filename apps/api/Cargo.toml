@@ -68,7 +68,7 @@ hex = "0.4"
 # for `Transaction::message_data()`/serialization) still pulls in
 # `solana-signer` transitively, so it's pinned here too, to the one exact
 # patch (3.0.0) that stays on the clean `solana-pubkey ^3.0.0` line.
-solana-transaction = { version = "=3.0.1", features = ["bincode"] }
+solana-transaction = { version = "=3.0.2", features = ["bincode"] }
 solana-message = "=3.0.1"
 solana-hash = "=3.1.0"
 solana-pubkey = "=3.0.0"

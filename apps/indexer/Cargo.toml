@@ -43,7 +43,7 @@ eventquest-chain = { path = "../../crates/eventquest-chain" }
 # generation a caret range would otherwise resolve to.
 [dev-dependencies]
 ed25519-dalek = "3"
-solana-transaction = { version = "=3.0.1", features = ["bincode"] }
+solana-transaction = { version = "=3.0.2", features = ["bincode"] }
 solana-message = "=3.0.1"
 solana-hash = "=3.1.0"
 solana-pubkey = "=3.0.0"
