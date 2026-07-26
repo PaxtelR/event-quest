@@ -19,7 +19,7 @@ function CheckpointDisplay({ checkpointId }: { checkpointId: string }) {
   const [isFullscreen, setIsFullscreen] = useState(false);
 
   return (
-    <main className="flex min-h-screen flex-1 flex-col items-center justify-center gap-6 bg-background px-6 py-12 text-center">
+    <main className="relative flex min-h-screen flex-1 flex-col items-center justify-center gap-6 bg-background px-6 py-12 text-center">
       <button
         type="button"
         onClick={() => {

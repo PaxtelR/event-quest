@@ -864,3 +864,119 @@ fn update_event_status_rejects_transition_from_terminal_state() {
         eventquest::errors::EventQuestError::InvalidStatusTransition,
     );
 }
+
+/// Not a correctness test — this exists so `/profile-cu` has a single,
+/// deterministic source of truth for per-instruction CU cost instead of a
+/// number quoted from memory. Run with `--nocapture` to see the table.
+#[test]
+fn cu_profile_prints_every_instructions_compute_units() {
+    let mut world = World::new();
+    let authority = Pubkey::new_unique();
+    let attestor = Pubkey::new_unique();
+    let participant = Pubkey::new_unique();
+    world.fund(authority);
+    world.fund(participant);
+    world.fund(attestor);
+
+    let mut rows: Vec<(&str, u64)> = Vec::new();
+    let mut send_and_record = |world: &mut World, label: &'static str, ix: &Instruction| {
+        let result = world.send(ix);
+        assert!(
+            result.program_result.is_ok(),
+            "{label} failed: {:?}",
+            result.program_result
+        );
+        rows.push((label, result.compute_units_consumed));
+    };
+
+    let (event, _) = event_pda(&authority, &HASH_A);
+    world.set(event, uninitialized_pda());
+    send_and_record(
+        &mut world,
+        "initialize_event",
+        &initialize_event_ix(authority, event, HASH_A),
+    );
+
+    let activate_ix = Instruction {
+        program_id: anchor_program_id(),
+        accounts: vec![
+            AccountMeta::new_readonly(authority, true),
+            AccountMeta::new(event, false),
+        ],
+        data: ix_data::UpdateEventStatus {
+            new_status: EventStatus::Active,
+        }
+        .data(),
+    };
+    send_and_record(&mut world, "update_event_status", &activate_ix);
+
+    let (checkpoint, _) = checkpoint_pda(&event, &CHECKPOINT_HASH);
+    world.set(checkpoint, uninitialized_pda());
+    send_and_record(
+        &mut world,
+        "create_checkpoint",
+        &create_checkpoint_ix(authority, event, checkpoint, CHECKPOINT_HASH, attestor),
+    );
+
+    let (participant_event, _) = participant_pda(&event, &participant);
+    world.set(participant_event, uninitialized_pda());
+    send_and_record(
+        &mut world,
+        "join_event",
+        &join_event_ix(participant, event, participant_event),
+    );
+
+    let (attendance, _) = attendance_pda(&event, &checkpoint, &participant);
+    world.set(attendance, uninitialized_pda());
+    send_and_record(
+        &mut world,
+        "check_in",
+        &check_in_ix(
+            participant,
+            attestor,
+            true,
+            event,
+            checkpoint,
+            participant_event,
+            attendance,
+            CHALLENGE_HASH,
+        ),
+    );
+
+    let update_checkpoint_ix = Instruction {
+        program_id: anchor_program_id(),
+        accounts: vec![
+            AccountMeta::new_readonly(authority, true),
+            AccountMeta::new_readonly(event, false),
+            AccountMeta::new(checkpoint, false),
+        ],
+        data: ix_data::UpdateCheckpoint {
+            params: UpdateCheckpointParams {
+                active: Some(false),
+                ..Default::default()
+            },
+        }
+        .data(),
+    };
+    send_and_record(&mut world, "update_checkpoint", &update_checkpoint_ix);
+
+    let finish_participant_event_ix = Instruction {
+        program_id: anchor_program_id(),
+        accounts: vec![
+            AccountMeta::new_readonly(authority, true),
+            AccountMeta::new_readonly(event, false),
+            AccountMeta::new(participant_event, false),
+        ],
+        data: ix_data::FinishParticipantEvent {}.data(),
+    };
+    send_and_record(
+        &mut world,
+        "finish_participant_event",
+        &finish_participant_event_ix,
+    );
+
+    println!("\n=== CU profile (Mollusk, happy path) ===");
+    for (label, cu) in &rows {
+        println!("{label:<28} {cu:>8} CU");
+    }
+}

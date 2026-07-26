@@ -2,7 +2,7 @@
 
 **Date**: 2026-07-26
 **Program**: `eventquest` (`programs/eventquest`), deployed Devnet program ID `CuULC7T6d49mf89sRPU8WLeYfkF74kDyEKvfCe2rXq8H`
-**Auditor**: Claude (self-audit, `/audit-solana`), verified by direct code review + `cargo clippy --all-targets -W clippy::all -D warnings` + `cargo audit` + full test suite, not tool output taken on faith
+**Auditor**: Claude (self-audit, `/audit-solana`), verified by direct code review + `cargo clippy --all-targets -W clippy::all -D warnings` + `cargo audit` + full test suite, not tool output taken on faith. Re-run same day (see "Re-verification pass" below) after other branch work (infra/CI/frontend) landed — program code itself untouched.
 
 ## Summary
 
@@ -48,7 +48,7 @@ No `unwrap()`/`expect()`/`panic!` anywhere in `programs/eventquest/src/instructi
 
 ## CU Discipline
 
-Zero `msg!()` calls anywhere in the program (verified by grep) — no CU spent on logging in the hot path. Observed CU consumption from live test runs: `check_in` ≈ 10.9k–21.3k CU, `create_checkpoint`/`initialize_event` single-digit-thousands — all far below the 200k default budget, no compute-budget instruction needed.
+Zero `msg!()` calls anywhere in the program (verified by grep) — no CU spent on logging in the hot path. Precise, reproducible measurements (superseding the earlier ad hoc range quoted here) are in [`docs/audits/cu-profile-2026-07-26.md`](audits/cu-profile-2026-07-26.md): every instruction from `update_event_status` (4.0k CU) up to `check_in` (19.4k CU, the highest) sits under 20k CU — all far below the 200k default budget, no compute-budget instruction needed.
 
 ## Testing Coverage
 
@@ -64,3 +64,18 @@ Not run in this pass — `anchor build --verifiable` requires Docker and is a Ma
 - [x] Comprehensive automated tests passing (Mollusk + live Devnet)
 - [ ] Professional third-party audit — not done (expected; this is a Devnet MVP, not a Mainnet-bound financial program)
 - [ ] Fuzz testing (Trident) — deferred, see `docs/SECURITY.md` SEC-03
+
+## Re-verification pass — 2026-07-26 (same day, `/audit-solana` re-run)
+
+`git log --oneline -- programs/eventquest crates/eventquest-chain` confirms **zero commits** to the on-chain program or its shared chain crate since this audit's original pass — all work on the branch since then (`/diff-review`, `/audit-infra`, the Docker/Railway deployment, wallet UX changes) touched `apps/api`, `apps/web`, CI, and infra config only. This pass exists to confirm nothing upstream regressed the program's security posture, not to redo the manual account/PDA/CPI review above, which stands unchanged.
+
+- **`cargo fmt --check`**: clean.
+- **`cargo audit`**: same 3 advisories as before (`rsa` via `jsonwebtoken`, plus the `mollusk-svm` dev-dependency transitive set) — `Cargo.lock` unchanged, still fully justified in `docs/SECURITY.md` SEC-04/SEC-05.
+- **`cargo build-sbf` + `cargo test -p eventquest`**: 15 integration tests + 1 trivial lib unit test, all passing, same names/coverage as the "Testing Coverage" section above — no regression.
+- **Stricter one-time pass**: `cargo clippy --all-targets -W clippy::all -W clippy::pedantic -W clippy::unwrap_used -W clippy::expect_used -W clippy::panic -W clippy::arithmetic_side_effects -D warnings` (this command's own Step 1, stricter than the project's normal CI lint of `clippy::all -D warnings`) surfaced findings across the whole workspace, not just the program. Reviewed each category that touched security-relevant code:
+  - **`arithmetic_side_effects` in `check_in.rs:50`, `create_checkpoint.rs:24`, `initialize_event.rs:16`, `join_event.rs:26`**: all four are `space = T::DISCRIMINATOR.len() + T::INIT_SPACE` inside an `#[account(init, ...)]` attribute — a compile-time constant sum computed once per Anchor macro expansion, never touching user input, never capable of overflowing. **False positive**, consistent with the "Arithmetic Security" section's existing `checked_add` audit of the program's actual runtime counters.
+  - **`arithmetic_side_effects` in `apps/api`/`apps/indexer`** (`process.rs:161` a bounded per-batch loop counter, `rpc.rs:78` an exponential-backoff delay bounded by a small `MAX_ATTEMPTS`, `main.rs:77` a `u32` polling-tick counter that would take over a century to wrap at any realistic interval, `auth/handlers.rs:38` and `blockchain/client.rs:137` date/duration arithmetic over constants or internally-supplied values, never attacker-controlled input) — reviewed individually, all outside the on-chain program's own attack surface and none reachable with attacker-influenced operands. **False positives**, not added to `docs/SECURITY.md` since none rises to a documented-deferral bar (no plausible exploit scenario).
+  - **`unwrap_used`/`expect_used` (3 sites: `crates/eventquest-domain/src/error.rs:171,179`, `crates/eventquest-config/src/lib.rs:240`)**: confirmed via `grep -n "mod tests"` that all three sites are inside `#[cfg(test)] mod tests` blocks — allowed per this project's own `rust.md` ("`unwrap()` is acceptable in tests"). **Not findings.**
+  - Remaining pedantic noise (`must_use_candidate`, `missing_errors_doc`, doc-backtick formatting, an unused `use *` wildcard import, a `u32`-to-`u64` cast expressible via `From`, two identical `match` arms) is pure style/lint preference, not security-relevant, and out of scope for a security audit — not pursued further (this project's actual CI gate is `clippy::all -D warnings`, which already passes clean).
+
+**Conclusion**: no new findings. The program's security posture is unchanged from the original pass above.

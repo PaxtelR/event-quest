@@ -8,6 +8,7 @@ import { useEffect, useRef, useState } from "react";
 import { useSession, useSignInWithWallet, useSignOut } from "@/hooks/useAuth";
 import { messages } from "@/i18n/en-US";
 import { truncateAddress } from "@/lib/wallet";
+import { getBackpackBrowseUrl, getPhantomBrowseUrl, getSolflareBrowseUrl } from "@/lib/walletDeepLinks";
 
 import { WalletOption } from "./WalletOption";
 
@@ -84,7 +85,34 @@ function WalletPicker({
           className="absolute right-0 z-20 mt-2 w-64 rounded-xl border border-border bg-surface-elevated p-1.5 shadow-lg"
         >
           {!hasAnyWalletAtAll ? (
-            <p className="p-3 text-sm text-text-secondary">{messages.wallet.noWalletsFound}</p>
+            <div className="flex flex-col gap-2 p-3">
+              <p className="text-sm text-text-secondary">{messages.wallet.noWalletsFound}</p>
+              {/* Mobile wallet apps only inject a provider inside their own
+                  in-app browser, never a phone's regular Safari/Chrome — a
+                  QR-scanned check-in link opened there will never see a
+                  connectable wallet no matter how long it waits. */}
+              <p className="text-xs text-text-disabled">{messages.wallet.openInWalletHint}</p>
+              <div className="flex flex-col gap-1.5">
+                <a
+                  href={getPhantomBrowseUrl(window.location.href, window.location.origin)}
+                  className="min-h-11 rounded-lg border border-border-strong bg-surface-elevated px-3 py-2 text-center text-sm font-semibold text-text-primary hover:bg-surface-hover"
+                >
+                  {messages.wallet.openInPhantom}
+                </a>
+                <a
+                  href={getSolflareBrowseUrl(window.location.href, window.location.origin)}
+                  className="min-h-11 rounded-lg border border-border-strong bg-surface-elevated px-3 py-2 text-center text-sm font-semibold text-text-primary hover:bg-surface-hover"
+                >
+                  {messages.wallet.openInSolflare}
+                </a>
+                <a
+                  href={getBackpackBrowseUrl(window.location.href, window.location.origin)}
+                  className="min-h-11 rounded-lg border border-border-strong bg-surface-elevated px-3 py-2 text-center text-sm font-semibold text-text-primary hover:bg-surface-hover"
+                >
+                  {messages.wallet.openInBackpack}
+                </a>
+              </div>
+            </div>
           ) : wallets.length === 0 ? (
             <p className="p-3 text-sm text-text-secondary">{messages.devnet.walletNotOnDevnet}</p>
           ) : (

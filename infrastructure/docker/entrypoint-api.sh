@@ -10,7 +10,9 @@ set -eu
 
 if [ -n "${ATTESTOR_KEYPAIR_JSON:-}" ]; then
   KEYPAIR_FILE="/app/attestor-keypair.json"
-  echo "$ATTESTOR_KEYPAIR_JSON" > "$KEYPAIR_FILE"
+  # Default umask would leave this world-readable within the container —
+  # cheap defense in depth for a file holding a private key in plaintext.
+  ( umask 077 && echo "$ATTESTOR_KEYPAIR_JSON" > "$KEYPAIR_FILE" )
   export ATTESTOR_KEYPAIR_PATH="$KEYPAIR_FILE"
 fi
 
