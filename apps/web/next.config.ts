@@ -13,6 +13,11 @@ const apiUrl = process.env.API_URL ?? "http://localhost:3001";
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
+  // Self-contained output (a minimal server.js + only the node_modules it
+  // actually needs) — infrastructure/docker/web.Dockerfile's runtime stage
+  // depends on this existing; without it there's no `.next/standalone` to
+  // copy out.
+  output: "standalone",
   // `next start`'s default gzip compression buffers responses to build
   // deflate blocks — harmless for normal pages, but it silently breaks the
   // rewritten `/api/v1/public/checkpoints/:id/qr-stream` SSE endpoint: a

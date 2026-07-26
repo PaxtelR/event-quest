@@ -1,0 +1,11 @@
+.git
+target
+node_modules
+.next
+.e2e-local
+.e2e-devnet
+.manual-test-logs
+.secrets
+*.log
+docs
+.claude
