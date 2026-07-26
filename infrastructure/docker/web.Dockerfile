@@ -3,14 +3,31 @@
 # the whole repo, not just apps/web's own directory).
 FROM node:22-slim AS builder
 
+# Docker never exposes a platform's service variables to `RUN` steps
+# automatically — only variables explicitly declared with `ARG` here get
+# populated from the `--build-arg`s Railway (or any platform) passes in.
+# Both `API_URL` (next.config.ts's rewrite destination — resolved once,
+# during `next build`, and baked into the standalone output, never read
+# again at container start) and every `NEXT_PUBLIC_*` var (inlined into
+# the client bundle the same way) need this, or they silently fall back
+# to their dev defaults no matter what's set in the platform's dashboard.
+ARG API_URL
+ARG NEXT_PUBLIC_DEFAULT_LOCALE
+ARG NEXT_PUBLIC_THEME
+ARG NEXT_PUBLIC_ACCENT_COLOR
+ARG NEXT_PUBLIC_SOLANA_NETWORK
+ARG NEXT_PUBLIC_SOLANA_PROGRAM_ID
+ENV API_URL=$API_URL
+ENV NEXT_PUBLIC_DEFAULT_LOCALE=$NEXT_PUBLIC_DEFAULT_LOCALE
+ENV NEXT_PUBLIC_THEME=$NEXT_PUBLIC_THEME
+ENV NEXT_PUBLIC_ACCENT_COLOR=$NEXT_PUBLIC_ACCENT_COLOR
+ENV NEXT_PUBLIC_SOLANA_NETWORK=$NEXT_PUBLIC_SOLANA_NETWORK
+ENV NEXT_PUBLIC_SOLANA_PROGRAM_ID=$NEXT_PUBLIC_SOLANA_PROGRAM_ID
+
 RUN corepack enable
 WORKDIR /workspace
 COPY . .
 RUN pnpm install --frozen-lockfile
-# NEXT_PUBLIC_* vars are inlined into the client bundle at build time, not
-# read at runtime — Railway (and most platforms) exposes a service's env
-# vars to its own build step automatically, so set these as real variables
-# on the web service, not just at deploy/runtime.
 RUN pnpm --filter=./apps/web build
 
 FROM node:22-slim AS runtime
