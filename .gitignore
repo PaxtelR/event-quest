@@ -40,6 +40,12 @@ id.json
 # EventQuest generated/local artifacts
 docs/DEVNET_TEST_REPORT.md.local
 
+# Phase 5 local E2E harness (scripts/e2e-local.sh) scratch output
+.e2e-local/
+apps/web/test-results/
+apps/web/playwright-report/
+apps/web/blob-report/
+
 # IDE / OS
 .idea/
 .vscode/
