@@ -10,12 +10,14 @@
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
     "test": "vitest run",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "test:e2e:devnet": "playwright test --config=playwright.devnet.config.ts"
   },
   "dependencies": {
     "next": "16.2.12",
     "react": "19.2.8",
     "react-dom": "19.2.8",
+    "@solana-program/system": "^0.13.0",
     "@solana/kit": "7.0.0",
     "@solana/react": "7.0.0",
     "@wallet-standard/react": "1.0.3",

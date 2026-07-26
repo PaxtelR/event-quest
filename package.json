@@ -16,5 +16,14 @@
     "test:e2e": "pnpm --filter=./apps/web exec playwright test",
     "devnet:smoke": "tsx scripts/devnet-smoke-test.ts",
     "devnet:verify-config": "bash scripts/verify-devnet-config.sh"
+  },
+  "dependencies": {
+    "@eventquest/chain-client": "workspace:*",
+    "@solana-program/system": "^0.13.0",
+    "@solana/kit": "^7.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "tsx": "^4.19.0"
   }
 }

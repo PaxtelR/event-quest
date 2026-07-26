@@ -42,6 +42,8 @@ docs/DEVNET_TEST_REPORT.md.local
 
 # Phase 5 local E2E harness (scripts/e2e-local.sh) scratch output
 .e2e-local/
+# Phase 6 Devnet E2E harness (scripts/devnet-e2e.sh) scratch output
+.e2e-devnet/
 apps/web/test-results/
 apps/web/playwright-report/
 apps/web/blob-report/

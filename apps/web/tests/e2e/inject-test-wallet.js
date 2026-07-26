@@ -13,7 +13,11 @@
 // to hand-roll in plain JS, so this file ships as-is with no build step.
 (function () {
   const CHAIN = "solana:devnet";
-  const RPC_URL = "http://127.0.0.1:8899";
+  // Overridable so the same injected wallet works against a local Surfnet
+  // (scripts/e2e-local.sh) or real Devnet (scripts/devnet-e2e.sh, spec
+  // §25.6) — the latter sets `window.__E2E_RPC_URL_OVERRIDE__` via a tiny
+  // addInitScript registered before this one.
+  const RPC_URL = window.__E2E_RPC_URL_OVERRIDE__ || "http://127.0.0.1:8899";
   const BASE58_ALPHABET = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
 
   function base58Encode(bytes) {
