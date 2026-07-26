@@ -117,24 +117,17 @@ version-pinning history in this project's ADRs and `.claude/rules/anchor.md`).
 Revisit when the next Anchor/Mollusk release naturally picks up newer
 transitive versions.
 
-## SEC-06: `docker-compose.yml` references nonexistent Dockerfiles
+## SEC-06 (resolved): `docker-compose.yml` referenced nonexistent Dockerfiles
 
-**Severity**: Low
-**Evidence**: `docker-compose.yml`'s `api`/`indexer`/`web` services point
-`build.dockerfile` at `infrastructure/docker/{api,indexer,web}.Dockerfile`;
-the `infrastructure/` directory doesn't exist.
-**Impact**: `docker compose up api indexer web` (the fully-containerized
-path) would fail. `docker compose up -d postgres redis` — the only
-invocation any script in this repo (`scripts/e2e-local.sh`,
-`scripts/devnet-e2e.sh`) actually uses — is unaffected.
-**Mitigation**: None needed for the current MVP delivery path; every
-verified E2E/Devnet proof in this project ran `apps/api`/`apps/indexer`/
-`apps/web` as host processes (`cargo run`, `pnpm start`), not containers.
-**Justification for deferral**: Writing production-grade multi-stage
-Dockerfiles for a Rust binary + a Next.js app is a real, bounded piece of
-work that doesn't change any functional or security property of the MVP
-itself — appropriate for a follow-up devops pass, not a blocker for
-Devnet-MVP completion.
+Was: `infrastructure/docker/{api,indexer,web}.Dockerfile` didn't exist,
+even though `docker-compose.yml` referenced them. Resolved — all three
+now exist, are built and run-tested (including a real container-to-
+container run against Postgres/Redis), and are deployed to production
+(Railway) behind `eventquest.paxtel.com.br`. See the README's
+"Deployment" section for the two real bugs that surfaced only once
+actually deployed (build-time vs. runtime env vars, and the container
+`HOSTNAME` variable breaking Next's standalone server's bind address)
+and how they were fixed.
 
 ## SEC-07: No rate limiting on `/auth/nonce` and `/auth/verify`
 

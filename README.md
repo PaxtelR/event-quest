@@ -6,6 +6,11 @@ connect a wallet, scan a rotating QR code at a checkpoint, and sign a
 real on-chain check-in transaction — co-signed by the event's attestor —
 that provably records their attendance and awards points.
 
+Built as the challenge project for the Solana development workshop run by
+**Superteam Brasil** at **TDC Floripa 2026**.
+
+**Live app**: [eventquest.paxtel.com.br](https://eventquest.paxtel.com.br)
+
 Full functional/technical spec: `EventQuest_Especificacao_IA_Solana_AI_Kit_EN_Dark.md`.
 
 ## Status
@@ -103,7 +108,7 @@ Solflare/Backpack), and create an event from `/admin`.
 # Rust: program (Mollusk) + backend + indexer + shared crates
 cargo fmt --check
 cargo clippy --workspace --all-targets -- -W clippy::all -D warnings
-cargo test --workspace              # 40 tests, 4 additional live-Devnet
+cargo test --workspace              # 42 tests, 4 additional live-Devnet
                                      # tests gated behind --ignored
 
 # TypeScript: frontend + generated client
@@ -146,16 +151,47 @@ never a mock, a local-validator-only result, or a simulated transaction
 - All deferred (non-blocking) findings, with severity/evidence/impact/mitigation/justification: [`docs/SECURITY.md`](docs/SECURITY.md)
 - Secrets: never committed (verified against full git history, not just the working tree) — see `.gitignore` and the infra audit's Phase 1
 
+## Deployment
+
+Live on [Railway](https://railway.app): `apps/web`, `apps/api`, and
+`apps/indexer` each run from their own Dockerfile
+(`infrastructure/docker/{web,api,indexer}.Dockerfile`), with managed
+Postgres and Redis add-ons. Config-as-code per service:
+`railway.web.json`, `railway.api.json`, `railway.indexer.json`.
+
+Two things worth knowing if you deploy this yourself:
+- `apps/web`'s rewrite destination (`API_URL`) and every `NEXT_PUBLIC_*`
+  var are resolved once, at `next build` time, and baked into the
+  standalone output — they're **not** re-read at container start, so the
+  Dockerfile declares them as `ARG`s (Docker never forwards a platform's
+  service variables into a build unless a matching `ARG` exists) and any
+  change to them needs a real rebuild, not just a restart.
+- `apps/api` binds to `$PORT` if the platform sets one (Railway does),
+  falling back to the port embedded in `API_URL` for local dev/
+  docker-compose, which never set `$PORT` at all.
+
 ## Known limitations
 
 See `docs/DEVNET_TEST_REPORT.md`'s "Known limitations" section and
-`docs/SECURITY.md` SEC-06/SEC-07 for the full list. Highlights:
+`docs/SECURITY.md` SEC-07 for the full list. Highlights:
 cNFT/Bubblegum passports, ranking, marketplace, token, payments,
 geofencing, and a native mobile app are explicitly out of MVP scope per
-spec §4/§30. `infrastructure/docker/*.Dockerfile` referenced by
-`docker-compose.yml` don't exist yet — every verified run in this project
-uses host processes for `apps/api`/`apps/indexer`/`apps/web`, containerizing
-only Postgres/Redis.
+spec §4/§30.
+
+## Roadmap
+
+- **Sponsored check-in fee**: today, both the organizer (event/checkpoint
+  creation) and the participant (`join_event`, `check_in`) pay their own
+  transaction fee and account rent — free on Devnet via faucet, but real
+  cost if this ever moved beyond Devnet. A **fee relayer** would let the
+  event owner (or the app itself) cover the participant's check-in cost:
+  the participant still signs to prove it's really their wallet, but a
+  separate funded backend keypair is the transaction's fee payer instead.
+  Meaningful for a non-crypto-native audience who shouldn't need SOL in
+  their wallet just to check in. Not implemented yet — see this repo's
+  own discussion of the tradeoffs (backend now needs a funded, actively
+  managed relayer wallet, and rate limiting matters more once check-ins
+  are free for participants to attempt).
 
 ## Operations
 
