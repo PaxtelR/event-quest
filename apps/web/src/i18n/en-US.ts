@@ -37,6 +37,10 @@ export const messages = {
     chooseWallet: "Choose a wallet",
     noWalletsFound:
       "No Solana wallets were found. Install a Wallet Standard–compatible wallet, such as Phantom, Solflare, or Backpack.",
+    openInWalletHint: "On mobile? Open this page inside your wallet app's own browser instead:",
+    openInPhantom: "Open in Phantom",
+    openInSolflare: "Open in Solflare",
+    openInBackpack: "Open in Backpack",
     connecting: "Connecting",
     signingIn: "Waiting for wallet signature",
     signInFailed: "Sign-in was cancelled or failed.",
