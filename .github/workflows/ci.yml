@@ -30,6 +30,19 @@ jobs:
       - name: cargo clippy
         run: cargo clippy --workspace --all-targets -- -W clippy::all -D warnings
 
+      # The Mollusk-based program tests (programs/eventquest/tests/) load
+      # the compiled on-chain program from target/deploy/eventquest.so at
+      # runtime — `cargo test` alone never produces it, only building for
+      # the SBF target does. Version pinned to match local dev (solana-cli
+      # 3.1.10 / Agave) — bump both together if either changes.
+      - name: Install Solana CLI (for cargo build-sbf)
+        run: |
+          sh -c "$(curl -sSfL https://release.anza.xyz/v3.1.10/install)"
+          echo "$HOME/.local/share/solana/install/active_release/bin" >> "$GITHUB_PATH"
+
+      - name: Build the on-chain program (for Mollusk tests)
+        run: cargo build-sbf --manifest-path programs/eventquest/Cargo.toml
+
       - name: cargo test
         run: cargo test --workspace
 
