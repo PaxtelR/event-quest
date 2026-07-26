@@ -1521,7 +1521,7 @@ dependencies = [
  "solana-account",
  "solana-instruction 2.3.3",
  "solana-program-error 2.2.2",
- "solana-pubkey 2.4.0",
+ "solana-pubkey 4.2.0",
  "solana-sdk-ids 2.2.1",
 ]
 
@@ -1556,7 +1556,7 @@ dependencies = [
  "solana-hash 3.1.0",
  "solana-instruction 3.0.0",
  "solana-message 3.0.1",
- "solana-pubkey 3.0.0",
+ "solana-pubkey 4.2.0",
  "solana-signature 3.0.0",
  "solana-signer",
  "solana-transaction",
@@ -1587,7 +1587,7 @@ name = "eventquest-config"
 version = "0.1.0"
 dependencies = [
  "serde",
- "solana-pubkey 3.0.0",
+ "solana-pubkey 4.2.0",
  "thiserror 2.0.19",
 ]
 
@@ -1623,7 +1623,7 @@ dependencies = [
  "solana-hash 3.1.0",
  "solana-instruction 3.0.0",
  "solana-message 3.0.1",
- "solana-pubkey 3.0.0",
+ "solana-pubkey 4.2.0",
  "solana-signature 3.0.0",
  "solana-signer",
  "solana-transaction",

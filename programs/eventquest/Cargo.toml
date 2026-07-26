@@ -31,7 +31,7 @@ anchor-lang = { workspace = true }
 # a blanket `solana-sdk = "3"` pin — see docs/adr, or `cargo tree -i` on
 # any of these crate names if this ever needs re-diagnosing).
 mollusk-svm = "0.5"
-solana-pubkey = "2.2"
+solana-pubkey = "4.2"
 solana-account = "2.2"
 solana-instruction = "2.2"
 solana-program-error = "2.2"
