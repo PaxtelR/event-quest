@@ -35,7 +35,7 @@ solana-pubkey = "2.2"
 solana-account = "2.2"
 solana-instruction = "2.2"
 solana-program-error = "2.2"
-solana-sdk-ids = "2.2"
+solana-sdk-ids = "3.1"
 
 [lints.rust]
 # Anchor's `#[program]` macro expands code gated on `target_os = "solana"`
