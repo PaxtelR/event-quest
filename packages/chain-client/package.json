@@ -16,7 +16,7 @@
     "@solana/program-client-core": "^7.0.0"
   },
   "devDependencies": {
-    "codama": "^1.9.0",
+    "codama": "^1.10.0",
     "@codama/nodes-from-anchor": "^1.5.2",
     "@codama/renderers-js": "^2.3.0",
     "typescript": "^5.7.0",
