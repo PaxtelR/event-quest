@@ -131,9 +131,8 @@ pnpm devnet:smoke
 
 CI (`.github/workflows/ci.yml`) runs fmt/clippy/`cargo audit`/test and
 typecheck/lint/test/build on every push and PR to `main`; every action is
-pinned to a commit SHA (`docs/audits/infra-2026-07-26.md`), and Dependabot
-(`.github/dependabot.yml`) keeps those SHAs and the Cargo/pnpm lockfiles
-current. `.cargo/audit.toml` allow-lists the 3 pre-reviewed advisories from
+pinned to a commit SHA (`docs/audits/infra-2026-07-26.md`).
+`.cargo/audit.toml` allow-lists the 3 pre-reviewed advisories from
 `docs/SECURITY.md` SEC-04/SEC-05 so CI only fails on new ones. The
 Devnet-facing scripts are deliberately not in CI — they need a funded
 keypair and take minutes. Fuzz testing (Trident) and a verifiable-build CI
