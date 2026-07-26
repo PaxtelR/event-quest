@@ -25,6 +25,8 @@ export const messages = {
     checkIn: "Check in",
     admin: "Admin",
     myPassport: "My passport",
+    openMenu: "Open menu",
+    closeMenu: "Close menu",
   },
   devnet: {
     banner: "Solana Devnet",
